@@ -56,6 +56,9 @@ static VALUE job_init(int argc, VALUE* argv, VALUE self)
 
   rb_scan_args(argc, argv, "12", &filename, &printer, &job_options);
 
+  if (NIL_P(filename)){
+      rb_raise(rb_eArgError, "Missing filename to print");
+  }
   rb_iv_set(self, "@filename", filename);
   rb_iv_set(self, "@url_path", rb_str_new2(cupsServer()));
 
@@ -70,17 +73,17 @@ static VALUE job_init(int argc, VALUE* argv, VALUE self)
     // Fall back to default printer
     VALUE def_p = rb_funcall(rubyCups, rb_intern("default_printer"), 0);
 
-    if (def_p == Qfalse) {
-			rb_raise(rb_eRuntimeError, "There is no default printer!");
-		} else {
-			rb_iv_set(self, "@printer", def_p);
-		}
+    if ( def_p == Qnil ) {
+	rb_raise(rb_eArgError, "No printer specified and there is no default printer!");
+    } else {
+	rb_iv_set(self, "@printer", def_p);
+    }
 
   } else {
     if (printer_exists(printer)) {
       rb_iv_set(self, "@printer", printer);
     } else {
-      rb_raise(rb_eRuntimeError, "The printer or destination doesn't exist!");
+	rb_raise(rb_eArgError, "The printer or destination doesn't exist!");
     }
   }
   return self;
