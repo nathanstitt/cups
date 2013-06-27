@@ -520,7 +520,7 @@ void Init_cups() {
   rb_define_attr(printJobs, "printer", 1, 0);
   rb_define_attr(printJobs, "filename", 1, 0);
   rb_define_attr(printJobs, "url_path", 1, 0);
-  rb_define_attr(printJobs, "job_id", 1, 0);
+  rb_define_attr(printJobs, "job_id", 1, 1);
   rb_define_attr(printJobs, "job_options", 1, 0);
   rb_define_attr(printJobs, "title", 1, 1);
 
