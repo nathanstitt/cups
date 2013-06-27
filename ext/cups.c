@@ -156,10 +156,11 @@ static VALUE cups_print(VALUE self)
 
   int encryption = (http_encryption_t)cupsEncryption();
   http_t *http = httpConnectEncrypt (url, port, (http_encryption_t) encryption);
-  job_id = cupsPrintFile2(http, target, fname, "rCups", num_options, options); // Do it. "rCups" should be the filename/path
-  //
-  // cupsFreeOptions(num_options, options);
-
+  job_id = cupsPrintFile2(http, target, fname, title, num_options, options);
+  if ( ! job_id ){
+      rb_raise(rb_eRuntimeError, "Failed to print %s to %s (%s)", fname, target, cupsLastErrorString() );
+  }
+  cupsFreeOptions(num_options, options);
   rb_iv_set(self, "@job_id", INT2NUM(job_id));
   return Qtrue;
 }
